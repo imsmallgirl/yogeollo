@@ -1,6 +1,6 @@
 # 개발 시작
 
-기존 프로젝트 설명은 `README.md`에 그대로 보존했습니다. 현재 **Phase 1(DB 기반)**까지 구현했으며 추천 서비스는 아직 동작하지 않습니다.
+기존 프로젝트 설명은 `README.md`에 그대로 보존했습니다. 현재 **Phase 2(추천 엔진)**까지 구현했으며 추천 서비스는 아직 동작하지 않습니다.
 
 ## 실행
 Node 24.x와 pnpm 11.5.1을 사용합니다.
@@ -49,3 +49,8 @@ TEST_DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_test' pnpm
 ```
 
 통합 테스트는 DB에 샘플을 입력하고 seed 재실행·SQL 제약·검증 상태·출처·기존 편집 보존을 확인합니다. 실제 서비스 DB를 사용하지 마세요. 전체 결과는 [Phase 1 보고서](docs/PHASE_1_REPORT.md)에 기록합니다.
+
+## 추천 엔진 (Phase 2)
+추천 함수는 `src/domain/recommendation/recommend.ts`, 조건 계약은 `preferences.ts`에 있습니다. 네트워크·DB 없이 `pnpm test`로 추천 로직을 검사할 수 있습니다. 데이터 repository와의 실제 화면 연결은 Phase 3입니다. 웹사이트는 여전히 준비 화면이며, Phase 2 완료가 데이터 공개 승인이나 다음 단계 진행 승인을 뜻하지 않습니다.
+
+추천 입력과 정렬·완화 정책은 [추천 엔진 문서](docs/RECOMMENDATION_ENGINE.md), 변경 파일과 검증 결과는 [Phase 2 보고서](docs/PHASE_2_REPORT.md)를 참고하세요.

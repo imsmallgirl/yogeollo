@@ -7,13 +7,13 @@ Next.js App Router / React / TypeScript strict / Tailwind CSS v4. Server Compone
 - `src/app`: 라우트, 레이아웃, metadata, robots, sitemap.
 - `src/components/ui`: 재사용 UI 기본 요소.
 - `src/lib`: 환경 검증과 공통 유틸리티.
-- 향후 `src/domain/recommendation`: 프레임워크·DB·시간·난수에 의존하지 않는 순수 추천 함수 및 타입.
+- `src/domain/recommendation`: Zod 조건 입력, 독립 DTO, 순수 추천 함수, 시간 완화·한국어 이유. 프레임워크·DB·현재 시각·난수에 의존하지 않는다.
 - `src/server`: `server-only` 경계의 지연 Prisma 연결과 검증된 게임 조회. 이 경로는 클라이언트에서 import하지 않는다.
 - `prisma`: PostgreSQL 스키마·SQL 마이그레이션·데이터 검증 후 create-only seed. CLI 전용 연결 factory를 서버 facade와 공유한다.
 - `src/domain/games`, `data/games`: Zod 데이터 계약과 출처 관측을 기록한 개발용 샘플 1개.
 - `tests/e2e`, `docs`: 브라우저 테스트와 설계 문서.
 
-추천 요청 → Zod 입력 파싱 → 서버 repository 조회 → 도메인 순수 함수 → 직렬화 가능한 결과 → 서버 렌더링. 룰렛만 선택 후보 DTO를 받아 클라이언트에서 동작한다. 단순 서버 렌더링에 자기 API를 호출하지 않는다. 외부 API가 필요할 때만 Route Handler를 만들고 입력과 응답을 검증한다.
+향후 Phase 3의 연결 흐름: 추천 요청 → Zod 입력 파싱 → 서버 repository 조회 → 도메인 순수 함수 → 직렬화 가능한 결과 → 서버 렌더링. 현재는 순수 함수와 데이터 조회를 개별 구현했으며 웹 요청과 연결하지 않았다. 룰렛만 선택 후보 DTO를 받아 클라이언트에서 동작한다. 단순 서버 렌더링에 자기 API를 호출하지 않는다. 외부 API가 필요할 때만 Route Handler를 만들고 입력과 응답을 검증한다.
 
 ## 런타임·환경
 Node 24.x, pnpm 11.5.1. `package.json`의 정확 버전과 `pnpm-lock.yaml`이 재현 기준이다. Next·React peer 조건은 레지스트리에서 확인했다. Prisma latest가 RC여서 안정 7.10.1로 고정했다. Phase 1에 Prisma 7 adapter·환경 로더·생성 단계를 추가했다. 설치·타입·빌드에 generate만 포함하며 실제 DB 연결·migration·seed는 실행하지 않는다.
@@ -31,4 +31,4 @@ TypeScript 7.0.2와 ESLint 10.14.0도 확인했으나 Next lint 플러그인의 
 pnpm 11이 생성한 `pnpm-workspace.yaml`은 Prisma 및 TypeScript CLI 실행에 필요한 esbuild 설치 스크립트를 명시적으로 허용하며, 릴리스 대기 정책 예외는 확인한 Next/Vitest 버전에 한정한다.
 
 ## 검증
-ESLint flat config, `next typegen && tsc --noEmit`, Vitest Node 환경, Playwright desktop/mobile Chromium. Phase 1에 데이터 계약 단위 테스트와 별도 `test:db` PostgreSQL 통합 테스트를 추가했다. 추천 테스트는 Phase 2에서 추가한다.
+ESLint flat config, `next typegen && tsc --noEmit`, Vitest Node 환경, Playwright desktop/mobile Chromium. Phase 1에 데이터 계약 단위 테스트와 별도 `test:db` PostgreSQL 통합 테스트를 추가했다. Phase 2에 추천 조건·엔진·시간 정책 테스트를 추가했으며 전체 단위 테스트 119개를 통과했다.
