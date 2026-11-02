@@ -1,24 +1,41 @@
-# 데이터베이스 설계안
+# 데이터베이스 — Phase 1 구현
 
-이 문서는 Phase 1 구현 기준이다. 이번 단계에는 Prisma 스키마·마이그레이션·seed·DB 연결이 없다. 대상 DB는 PostgreSQL이며 로컬과 호스팅 버전은 Phase 1에 확정한다.
+## 런타임과 연결
+PostgreSQL 17.x를 개발·검증 기준으로 선택했다. 실제 통합 검증은 17.11에서 수행했다. Prisma CLI·Client·PostgreSQL adapter는 모두 7.10.1이다. 스키마는 `prisma/schema.prisma`, 최초 migration은 `prisma/migrations/20261102170000_initial/migration.sql`이다. 기본 PostgreSQL `public` 스키마를 사용한다.
 
-## BoardGame
-사용자 요청 필드 `id`, `slug`, `nameKo`, `nameEn`, `minPlayers`, `maxPlayers`, `bestPlayers`, `minPlayTime`, `maxPlayTime`, `complexity`, `categories`, `mechanics`, `moodTags`, `languageDependency`, `koreanEdition`, `domesticAvailability`, `descriptionKo`, `verificationStatus`, `lastVerifiedAt`, `createdAt`, `updatedAt`을 유지한다.
+Prisma 7의 `prisma-client` generator가 `src/generated/prisma`에 생성하며 생성물은 Git에서 제외한다. 설치 후 및 타입·빌드 검사 전에 생성한다. DB 연결 없이 생성·빌드할 수 있다. migration이나 seed는 빌드에 포함하지 않는다.
 
-id는 UUID, slug는 unique, 한국어 이름은 필수, 영문 이름은 nullable. 인원·시간은 양의 정수이며 min ≤ max. `bestPlayers`는 정수 배열이며 가능 범위 내 값만 허용한다. 시간 원자료의 범위를 저장하고 실제 평균은 출처가 있을 때 별도 nullable 필드에 저장한다. complexity는 출처 척도와 값 또는 null로 저장하고 자체 난이도 레벨과 구분한다. 배열은 PostgreSQL 배열을 고려한다.
+`prisma.config.ts`는 Next 환경 로더로 `.env*`를 읽는다. migration CLI는 `DIRECT_URL`이 있으면 우선하고 없으면 `DATABASE_URL`을 사용한다. 실제 앱과 seed는 `DATABASE_URL`만 사용한다. `src/server/db.ts`는 `server-only`와 지연 초기화·프로세스별 연결 재사용을 제공한다. CLI는 `prisma/client.ts`의 동일 factory를 사용한다. 최대 연결 수 5, 연결 대기 5초, idle 30초, statement timeout 10초다. 배포 시 인스턴스 수에 맞춰 연결 예산을 다시 정한다. 인증서 검증을 끄지 않는다.
 
-`koreanEdition`, `domesticAvailability`, `languageDependency`는 unknown을 표현하는 enum을 사용한다. 국내 판매는 AVAILABLE / UNAVAILABLE / UNKNOWN, 검증은 PENDING / VERIFIED / REJECTED / STALE로 구분한다. 인기 지표는 판매 여부에서 추론하지 않으며 별도 관측 모델로 추가한다. lastVerifiedAt은 미검증이면 nullable이다.
+## 물리 모델과 요구 필드 대응
+| 모델 | 필드와 역할 |
+| --- | --- |
+| BoardGame | UUID id, 고유 slug, nameKo/nameEn, editionNote, min/maxPlayers, min/maxPlayTime, nullable averagePlayTime, nullable complexity/complexityScale, koreanEdition, domesticAvailability, domesticPlayStatus, domesticPopularityStatus, verificationStatus, nullable lastVerifiedAt, createdAt/updatedAt |
+| GameEditorial | 게임 1:1 자체 편집. bestPlayers, categories, mechanics, moodTags, nullable difficulty, languageDependency, nullable descriptionKo/setupKo/howToPlayKo/victoryKo/recommendedForKo/cautionsKo, rationaleKo, author, verificationStatus, reviewedAt와 생성·수정일 |
+| GameSource | 게임 1:N. id, boardGameId, sourceName/sourceUrl/sourceType, 최신 관측 verifiedAt |
+| SourceObservation | 출처 1:N 관측 이력. verifiedAt, verificationStatus, checkedFields, observedFacts(JSONB), collectionMethod, reviewedBy, evidenceNoteKo, usageStatus/usageNoteKo, createdAt |
+| ExternalGameId | 게임 1:N. id, boardGameId, provider/externalId. 이번 샘플에는 외부 ID를 추측해 입력하지 않음 |
 
-## GameSource
-id UUID, boardGameId FK, sourceName, sourceUrl, sourceType, verifiedAt. 게임 1:N 출처. sourceType은 국내 유통사·출판사·BGG·허가 공개데이터·자체 편집을 구분한다. `(boardGameId, sourceUrl)` unique, boardGameId 인덱스. URL은 출처 위치이며 복제 권한을 뜻하지 않는다.
+요청된 BoardGame 필드 중 추천 인원·태그·한국어 소개·언어 의존도는 Phase 0 설계대로 GameEditorial에 물리적으로 분리한다. 도메인 입력은 `BoardGameRecord`의 `facts`와 `editorial`로 구분하며, 추후 추천 DTO에 이들을 결합한다. 외부 facts와 자체 판단의 출처를 혼동하지 않기 위한 구조다. 확인하지 못한 난이도·언어 의존도·평균 시간은 null/UNKNOWN으로 보존한다. complexity는 원자료의 척도 명칭과 함께 보관하며 자체 difficulty로 변환하지 않는다.
 
-출처별 `checkedFields`, 수집 방식, 라이선스/허가 근거, 확인자, 확인 결과, 원자료 관측일을 추가해 필드별 근거를 추적한다. verifiedAt만으로 판매 중·인기 등 모든 사실이 확인됐다고 해석하지 않는다. 변경 이력은 덮어쓰기 대신 관측 기록으로 보존한다.
+## 상태
+- verificationStatus: PENDING / VERIFIED / STALE / REJECTED. VERIFIED는 명시된 사실의 출처 대조이며 공개 승인·복제 허가를 뜻하지 않는다.
+- domesticAvailability: UNKNOWN / LISTED / IN_STOCK / OUT_OF_STOCK. 상품 노출과 재고 확인을 구분한다.
+- domesticPlayStatus와 domesticPopularityStatus: 각각 UNKNOWN / CONFIRMED. 판매에서 플레이·인기를 추론하지 않는다.
+- koreanEdition: UNKNOWN / CONFIRMED / NOT_AVAILABLE.
+- languageDependency: UNKNOWN / NONE / LOW / MEDIUM / HIGH. 자체 편집 판단이다.
+- usageStatus: FACTS_ONLY / PERMISSION_GRANTED / OPEN_LICENSE / UNCONFIRMED. FACTS_ONLY는 소량의 사실 기록 범위이며 라이선스 허가 상태가 아니다.
 
-## ExternalGameId
-id UUID, boardGameId FK, provider, externalId. 게임 1:N 외부 ID. `(provider, externalId)` unique 및 `(boardGameId, provider)` unique. 판본·확장판 병합 여부는 사람이 검토한다.
+## 제약과 인덱스
+BoardGame slug unique, 검증·유통 상태 복합 인덱스, 인원 범위·시간 범위 인덱스. GameEditorial boardGameId unique. GameSource `(boardGameId, sourceUrl)` unique, SourceObservation `(gameSourceId, verifiedAt)` unique. 복합 unique의 선두 FK가 관계 조회 인덱스를 겸한다. ExternalGameId는 `(provider, externalId)`와 `(boardGameId, provider)` 모두 unique다. GIN은 아직 추가하지 않았다.
 
-## 자체 편집 데이터 분리
-별도 GameEditorial 1:1 모델로 자체 추천 분위기·난이도·권장 인원 근거·descriptionKo·준비·기본 진행·승리·추천 대상·주의점을 관리한다. 요청된 BoardGame 필드 중 자체 작성 필드는 이 관계에서 조회하는 도메인 projection으로 제공한다. 외부 facts와 자체 판단은 source/provenance를 섞지 않는다. 실제 schema에서 물리적 위치를 확정하고 문서를 동기화한다.
+SQL CHECK로 양의 인원·시간, min ≤ max, 평균의 범위 포함, 복잡도 값·척도 쌍, 검증 날짜, 빈 이름·잘못된 slug, 관측 JSON 객체 등을 제한한다. 추천 인원의 중복·범위는 양쪽 테이블 trigger로 보강해 게임 가능 인원 변경 시에도 무결성을 지킨다. 배열은 null을 허용하지 않는다. 모든 FK는 `onDelete: Restrict`로 감사 출처가 함께 사라지는 실수를 막는다.
 
-## 제약·인덱스
-slug unique, `(verificationStatus, domesticAvailability)`, 인원 범위, 시간 범위 조회 인덱스를 검토한다. 배열 검색 GIN은 데이터량과 쿼리 계획 확인 후 추가한다. 단일 조건마다 무조건 인덱스를 만들지 않는다. SQL CHECK로 인원·시간·complexity 범위를 보강하고 Zod로 배열·교차 필드 조건을 검증한다. 출처와 외부 ID 삭제는 게임 삭제 시 cascade를 고려하되 감사 이력 보존 정책을 먼저 정한다.
+Zod는 필수 필드, enum, URL, 날짜, 추천 인원, slug·출처·외부 ID 중복을 검사한다. VERIFIED 사실은 최신의 이용 근거가 있는 VERIFIED 관측에서 **같은 필드와 값**이 확인되어야 한다. 출처 없는 재고·인기 승격을 막는다. 검증 상태 전환·이력 추가는 향후 수집 파이프라인에서 관리하며 DB 자체가 사실의 진위나 이용 허가를 자동 판정하지 않는다. JSON의 개별 필드 출처 연결과 문자열 URL의 의미 검증은 애플리케이션 책임이다.
+
+## seed·조회·운영 경계
+seed는 전체 입력을 먼저 검증한 뒤 트랜잭션 안에서 slug 기준 create-only upsert한다. 기존 게임·자체 편집·관측은 덮어쓰거나 삭제하지 않는다. seed 재실행은 신규 관측 갱신 수단이 아니다. 샘플 수정 반영은 별도 검토와 데이터 변경 절차로 수행한다.
+
+`src/server/games.ts` 기본 조회는 VERIFIED 게임만 읽고 VERIFIED 편집만 반환한다. 결과의 Decimal·Date는 number·ISO 문자열로 직렬화하고 다시 Zod 검증한다. 손상된 VERIFIED 데이터는 임의 보정하지 않고 검증 오류로 차단한다. 이 조회는 아직 UI·API에 노출하지 않았다. 사람의 공개·권리 검토 전에는 서비스 공개 데이터로 사용하지 않는다.
+
+통합 테스트는 명시적인 `TEST_DATABASE_URL`만 사용하고 DB 이름이 `_test`로 끝나야 한다. 범위·중복 테스트의 임시 변경은 롤백한다. seed 보존 테스트는 전용 DB에서 기존 편집을 확인 후 원복한다. 운영 DB에서는 테스트를 실행하지 않는다.

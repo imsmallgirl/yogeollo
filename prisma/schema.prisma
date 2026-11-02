@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  STALE
+  REJECTED
+}
+
+enum DomesticAvailability {
+  UNKNOWN
+  LISTED
+  IN_STOCK
+  OUT_OF_STOCK
+}
+
+enum EvidenceStatus {
+  UNKNOWN
+  CONFIRMED
+}
+
+enum KoreanEdition {
+  UNKNOWN
+  CONFIRMED
+  NOT_AVAILABLE
+}
+
+enum LanguageDependency {
+  UNKNOWN
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum Difficulty {
+  BEGINNER
+  EASY
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum MoodTag {
+  PARTY
+  STRATEGY
+  DEDUCTION
+  COOPERATIVE
+  RELAXED
+}
+
+enum SourceType {
+  DOMESTIC_DISTRIBUTOR
+  PUBLISHER
+  PUBLIC_DATA
+  BGG
+}
+
+enum UsageStatus {
+  FACTS_ONLY
+  PERMISSION_GRANTED
+  OPEN_LICENSE
+  UNCONFIRMED
+}
+
+model BoardGame {
+  id                       String               @id @default(uuid()) @db.Uuid
+  slug                     String               @unique
+  nameKo                   String
+  nameEn                   String?
+  editionNote              String
+  minPlayers               Int
+  maxPlayers               Int
+  minPlayTime              Int
+  maxPlayTime              Int
+  averagePlayTime          Int?
+  complexity               Decimal?             @db.Decimal(4, 2)
+  complexityScale          String?
+  koreanEdition            KoreanEdition        @default(UNKNOWN)
+  domesticAvailability     DomesticAvailability @default(UNKNOWN)
+  domesticPlayStatus       EvidenceStatus       @default(UNKNOWN)
+  domesticPopularityStatus EvidenceStatus       @default(UNKNOWN)
+  verificationStatus       VerificationStatus   @default(PENDING)
+  lastVerifiedAt           DateTime?            @db.Timestamptz(3)
+  createdAt                DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt                DateTime             @updatedAt @db.Timestamptz(3)
+  editorial                GameEditorial?
+  sources                  GameSource[]
+  externalIds              ExternalGameId[]
+
+  @@index([verificationStatus, domesticAvailability])
+  @@index([minPlayers, maxPlayers])
+  @@index([minPlayTime, maxPlayTime])
+}
+
+// Independently authored judgments; these are never presented as publisher facts.
+model GameEditorial {
+  id                 String             @id @default(uuid()) @db.Uuid
+  boardGameId        String             @unique @db.Uuid
+  boardGame          BoardGame          @relation(fields: [boardGameId], references: [id], onDelete: Restrict)
+  bestPlayers        Int[]              @default([])
+  categories         String[]           @default([])
+  mechanics          String[]           @default([])
+  moodTags           MoodTag[]          @default([])
+  difficulty         Difficulty?
+  languageDependency LanguageDependency @default(UNKNOWN)
+  descriptionKo      String?
+  setupKo            String?
+  howToPlayKo        String?
+  victoryKo          String?
+  recommendedForKo   String?
+  cautionsKo         String?
+  rationaleKo        String
+  author             String
+  verificationStatus VerificationStatus @default(PENDING)
+  reviewedAt         DateTime?          @db.Timestamptz(3)
+  createdAt          DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime           @updatedAt @db.Timestamptz(3)
+}
+
+model GameSource {
+  id           String              @id @default(uuid()) @db.Uuid
+  boardGameId  String              @db.Uuid
+  boardGame    BoardGame           @relation(fields: [boardGameId], references: [id], onDelete: Restrict)
+  sourceName   String
+  sourceUrl    String
+  sourceType   SourceType
+  verifiedAt   DateTime            @db.Timestamptz(3)
+  observations SourceObservation[]
+
+  @@unique([boardGameId, sourceUrl])
+}
+
+// Append new observations instead of overwriting earlier verification evidence.
+model SourceObservation {
+  id                 String             @id @default(uuid()) @db.Uuid
+  gameSourceId       String             @db.Uuid
+  gameSource         GameSource         @relation(fields: [gameSourceId], references: [id], onDelete: Restrict)
+  verifiedAt         DateTime           @db.Timestamptz(3)
+  verificationStatus VerificationStatus @default(PENDING)
+  checkedFields      String[]
+  observedFacts      Json
+  collectionMethod   String
+  reviewedBy         String
+  evidenceNoteKo     String
+  usageStatus        UsageStatus        @default(UNCONFIRMED)
+  usageNoteKo        String
+  createdAt          DateTime           @default(now()) @db.Timestamptz(3)
+
+  @@unique([gameSourceId, verifiedAt])
+}
+
+model ExternalGameId {
+  id          String    @id @default(uuid()) @db.Uuid
+  boardGameId String    @db.Uuid
+  boardGame   BoardGame @relation(fields: [boardGameId], references: [id], onDelete: Restrict)
+  provider    String
+  externalId  String
+
+  @@unique([provider, externalId])
+  @@unique([boardGameId, provider])
+}

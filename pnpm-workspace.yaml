@@ -1,5 +1,6 @@
 allowBuilds:
   '@prisma/engines': true
+  esbuild: true
   prisma: true
 minimumReleaseAgeExclude:
   - '@next/env@16.4.4'

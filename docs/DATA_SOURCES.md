@@ -1,7 +1,7 @@
 # 데이터 출처와 수집 정책
 
 ## 현재 상태
-검증된 게임 데이터는 0개다. 이번 단계에서는 게임 정보를 수집하거나 seed를 만들지 않았다. 100개는 목표이며 숫자를 맞추기 위해 이름·인원·규칙·판매 사실을 생성하지 않는다.
+Phase 1에는 스플렌더 기본판 **1개**의 소량 사실 확인 샘플과 seed를 추가했다. 100개는 목표이며 숫자를 맞추기 위해 이름·인원·규칙·판매 사실을 생성하지 않는다. 공개 승인 완료 게임은 아직 0개다.
 
 ## 후보 출처
 - 코리아보드게임즈: https://www.koreaboardgames.com/
@@ -9,7 +9,7 @@
 - BoardGameGeek API 안내: https://boardgamegeek.com/wiki/page/BGG_XML_API2
 - 기타 국내 유통사·출판사 및 이용이 허용된 공개 데이터.
 
-위 URL은 탐색 후보이며 이용 약관·수집 권한·데이터 정확성을 검증했다는 뜻이 아니다. 자동 수집은 수행하지 않았다. BGG는 애플리케이션 승인·인증·이용 조건 확인 전 연동하지 않는다. 사이트별 robots와 약관을 확인하되 robots 허용만으로 데이터 이용 허가를 간주하지 않는다.
+위 목록은 탐색 후보이며 서비스 전체에 대한 수집 권한·복제 허가를 뜻하지 않는다. 자동 수집은 수행하지 않았다. BGG는 애플리케이션 승인·인증·이용 조건 확인 전 연동하지 않는다. 사이트별 robots와 약관을 확인하되 robots 허용만으로 데이터 이용 허가를 간주하지 않는다.
 
 ## Phase 1 수동 검증과 Phase 5 파이프라인
 허용된 수동 조사나 제공 파일로 소량 후보를 확보 → 출처와 관측 사실 기록 → Zod 구조·범위 검증 → 중복/판본 검토 → 사람의 승인 → VERIFIED 전환 → 트랜잭션 반영. 승인된 자동 수단이 없으면 수동 샘플만 유지한다.
@@ -25,3 +25,17 @@
 2026-11-03 실행 환경의 npm 레지스트리 `pnpm view` 결과를 기준으로 안정 버전을 선택했다. Next 16.4.4, React 19.3.1, Tailwind 4.3.3, Vitest 5.1.0, Playwright 1.64.1. Prisma latest=8.0.0-rc.29를 제외하고 안정 7.10.1 사용. 실제 전이 의존성은 잠금 파일을 따른다.
 
 공식 참고: [Next.js 설치](https://nextjs.org/docs/app/getting-started/installation), [Prisma 7 전환](https://www.prisma.io/docs/orm/more/upgrade-guides/upgrading-versions/upgrading-to-prisma-7), [Tailwind Next.js 설치](https://tailwindcss.com/docs/installation/framework-guides/nextjs), [shadcn Next.js 설치](https://ui.shadcn.com/docs/installation/next).
+
+## Phase 1 실제 확인 기록
+확인 시각: 2026-11-02 16:54:27 UTC (한국 2026-11-03). 상세 기록은 `data/games/splendor.json`의 source observations에 저장했다. 사람의 확인이 있었다고 기록하지 않으며 reviewedBy에 개발 에이전트의 공개 페이지 대조임을 명시했다.
+
+| 출처 | 확인한 범위 | 확인하지 않은 범위 |
+| --- | --- | --- |
+| [국내 유통사 공식 프로필](https://link.inpock.co.kr/koreaboardgames) | 스플렌더 한국어 이름·상품 노출(LISTED) | 현재 주문 가능 재고·한국어판·판매량·국내 인기 |
+| [Asmodee Italia 기본판 제품 안내](https://www.asmodee.it/product/splendor/) | 영문 이름·기본판·2~4인·표기 30분 | 한국 유통 제품의 구성물 동일성·실측 평균·추천 인원 |
+
+다른 지역의 공식 자료에 30~45분 표기도 있으므로, 이번 데이터는 이탈리아 공식 제품 페이지의 30분 표기임을 한정하고 판본 대조 미완료를 기록했다. 시간 범위 중간값을 평균으로 생성하지 않았다. BGG ID·복잡도·인기 지표도 추측하지 않았다.
+
+소개·전략 태그·자원/카드 메커니즘은 외부 문구를 복제하지 않고 자체 작성한 `PENDING` 편집 초안이다. 추천 인원과 난이도는 비워 두었다. 기본 서버 조회에서는 미검토 편집을 숨긴다. 준비·진행·승리 규칙 요약은 Phase 4에서 작성·검토한다.
+
+[코리아보드게임즈 이용약관](https://www.koreaboardgames.com/main/terms?termsType=1)의 저작물 이용 제한을 확인했으며 저작물 복제·자동 수집·상업적 재이용 권한을 확보했다고 주장하지 않는다. 이미지·상세 설명·규칙 원문·가격은 저장하지 않았다. 소량 사실 대조와 출처 링크만 개발용으로 기록했으며, 공개 전 사람의 출처·판본·이용 범위 검토가 필요하다. 전체 수집 파이프라인이나 데이터 공개 승인은 이번 단계에 포함하지 않는다.

@@ -1,0 +1,109 @@
+{
+  "facts": {
+    "slug": "splendor",
+    "nameKo": "스플렌더",
+    "nameEn": "Splendor",
+    "editionNote": "기본판. 듀얼·마블·포켓몬·확장판은 포함하지 않음. 한국 유통 판본의 구성물 대조는 미완료.",
+    "minPlayers": 2,
+    "maxPlayers": 4,
+    "minPlayTime": 30,
+    "maxPlayTime": 30,
+    "averagePlayTime": null,
+    "complexity": null,
+    "complexityScale": null,
+    "koreanEdition": "UNKNOWN",
+    "domesticAvailability": "LISTED",
+    "domesticPlayStatus": "UNKNOWN",
+    "domesticPopularityStatus": "UNKNOWN",
+    "verificationStatus": "VERIFIED",
+    "lastVerifiedAt": "2026-11-02T16:54:27Z"
+  },
+  "editorial": {
+    "bestPlayers": [],
+    "categories": [
+      "자원 관리",
+      "전략"
+    ],
+    "mechanics": [
+      "자원 획득",
+      "카드 구매",
+      "할인 효과 누적"
+    ],
+    "moodTags": [
+      "STRATEGY"
+    ],
+    "difficulty": null,
+    "languageDependency": "UNKNOWN",
+    "descriptionKo": "보석 자원을 모아 카드를 구매하고, 얻은 카드의 효과를 다음 구매에 활용하는 경쟁 게임입니다. 자원 확보와 점수 획득 사이에서 자신의 선택을 계획합니다.",
+    "setupKo": null,
+    "howToPlayKo": null,
+    "victoryKo": null,
+    "recommendedForKo": null,
+    "cautionsKo": "한국 유통 판본과 보유한 제품의 인원·시간 안내를 함께 확인하세요. 표기 시간은 실측 평균이 아닙니다.",
+    "rationaleKo": "퍼블리셔가 설명하는 자원 수집·카드 구매·누적 할인 구조를 바탕으로 전략 태그와 메커니즘을 자체 작성했습니다. 추천 인원·난이도·언어 의존도와 규칙 요약은 아직 검토하지 않았습니다.",
+    "author": "요걸로 개발 에이전트 자체 작성 초안",
+    "verificationStatus": "PENDING",
+    "reviewedAt": null
+  },
+  "sources": [
+    {
+      "sourceName": "코리아보드게임즈 공식 인포크링크",
+      "sourceUrl": "https://link.inpock.co.kr/koreaboardgames",
+      "sourceType": "DOMESTIC_DISTRIBUTOR",
+      "verifiedAt": "2026-11-02T16:54:27Z",
+      "observations": [
+        {
+          "verifiedAt": "2026-11-02T16:54:27Z",
+          "verificationStatus": "VERIFIED",
+          "checkedFields": [
+            "nameKo",
+            "domesticAvailability"
+          ],
+          "collectionMethod": "MANUAL_REVIEW",
+          "reviewedBy": "요걸로 개발 에이전트 공개 페이지 대조",
+          "evidenceNoteKo": "유통사 공식 프로필의 상품 영역에 스플렌더가 노출됨을 확인했습니다. 상품 노출만 확인했으며 실제 주문 가능 재고·한국어판·판매량·국내 인기는 확인하지 않았습니다.",
+          "usageStatus": "FACTS_ONLY",
+          "usageNoteKo": "소량의 상품명과 상품 노출 사실 및 출처 URL만 기록합니다. 외부 이미지·가격·설명·규칙 문구는 저장하지 않습니다. 복제 허가를 취득한 것으로 해석하지 않습니다. 공개 서비스 전 사람의 출처·이용 범위 검토가 필요합니다.",
+          "observedFacts": {
+            "nameKo": "스플렌더",
+            "domesticAvailability": "LISTED"
+          }
+        }
+      ]
+    },
+    {
+      "sourceName": "Asmodee Italia Splendor 공식 제품 안내",
+      "sourceUrl": "https://www.asmodee.it/product/splendor/",
+      "sourceType": "PUBLISHER",
+      "verifiedAt": "2026-11-02T16:54:27Z",
+      "observations": [
+        {
+          "verifiedAt": "2026-11-02T16:54:27Z",
+          "verificationStatus": "VERIFIED",
+          "checkedFields": [
+            "nameEn",
+            "editionNote",
+            "minPlayers",
+            "maxPlayers",
+            "minPlayTime",
+            "maxPlayTime"
+          ],
+          "collectionMethod": "MANUAL_REVIEW",
+          "reviewedBy": "요걸로 개발 에이전트 공개 페이지 대조",
+          "evidenceNoteKo": "Splendor 기본판 공식 제품 안내의 2~4인 및 표기 시간 30분을 확인했습니다. 한국 판본과 구성물이 동일하다는 의미는 아니며, 평균 시간을 측정한 자료도 아닙니다.",
+          "usageStatus": "FACTS_ONLY",
+          "usageNoteKo": "게임 식별과 인원·시간의 소량 사실만 기록합니다. 제품 이미지·설명·규칙 원문은 복제하지 않습니다. 자체 소개와 태그는 별도 편집 초안이며 퍼블리셔의 추천으로 표시하지 않습니다.",
+          "observedFacts": {
+            "nameEn": "Splendor",
+            "editionNote": "기본판. 듀얼·마블·포켓몬·확장판은 포함하지 않음. 한국 유통 판본의 구성물 대조는 미완료.",
+            "minPlayers": 2,
+            "maxPlayers": 4,
+            "minPlayTime": 30,
+            "maxPlayTime": 30
+          }
+        }
+      ]
+    }
+  ],
+  "externalIds": []
+}

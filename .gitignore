@@ -9,3 +9,4 @@ test-results/
 *.tsbuildinfo
 .DS_Store
 .pnpm-store/
+src/generated/prisma/

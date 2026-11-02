@@ -1,7 +1,7 @@
 # 개발 계획과 단계별 보고
 
 ## 승인 경계
-이번 실행은 Phase 0만 수행한다. 완료 후 사용자 승인 전까지 Phase 1 이후 구현을 진행하지 않는다.
+Phase 0은 완료했고 사용자의 다음 단계 승인으로 Phase 1을 구현했다. Phase 1 완료 후 별도 승인 전까지 Phase 2를 진행하지 않는다.
 
 ## Phase 0 — 프로젝트 초기화·문서
 변경 파일: 루트 package/lock/TypeScript/Next/PostCSS/ESLint/shadcn/Vitest/Playwright/환경 설정, `src/app/*`, `src/components/ui/button.tsx`, `src/lib/*`, `tests/e2e/home.spec.ts`, `docs/*.md`, `GETTING_STARTED.md`.
@@ -10,7 +10,7 @@
 
 품질 검사 결과는 `docs/PHASE_0_REPORT.md`에 기록한다. 미완료: DB 모델·마이그레이션·검증 게임·추천·결과 UI·상세·소개·룰렛·수집·실제 배포. 의도적으로 다음 단계에 남긴다.
 
-## Phase 1 — DB와 검증 샘플
+## Phase 1 — DB와 검증 샘플 (구현 완료)
 Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·seed, 출처 기록. 소량 데이터의 권리와 실제 사실을 수동 검증한다. 완료: DB validation/migration/seed 재실행 검증, 출처와 자체 편집 데이터 구분. 선행 조건: 사용자 승인과 합법적 데이터 접근.
 
 ## Phase 2 — 추천 엔진
@@ -27,3 +27,6 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 
 ## Phase 6 — 품질·배포
 전체 lint·타입·단위·E2E·production build, 모바일 접근성, DB 통합, Vercel 환경·migration·연결 풀·SEO 정책 검증. 배포는 별도 승인된 범위에서 실행한다. 100개 검증이 불가능하면 실제 수량과 한계를 공개한다.
+
+### Phase 1 작업 기록
+변경 파일·검사·미완료 사항은 `docs/PHASE_1_REPORT.md`를 따른다. 최초 스키마와 SQL 제약, 서버 전용 연결·조회, 출처 확인 샘플 1개, 비파괴 seed, Zod 검증 및 DB 통합 테스트를 추가했다. 공개 전 사람의 출처·판본·권리 검토는 남아 있으며 자동 수집이나 추천 기능은 구현하지 않았다.
