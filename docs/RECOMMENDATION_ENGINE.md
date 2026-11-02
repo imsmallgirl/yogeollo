@@ -1,7 +1,7 @@
 # 추천 엔진 — Phase 2 구현
 
 ## 범위와 계약
-`src/domain/recommendation/recommend.ts`의 `recommend(games, preferences)`는 UI·React·Next·DB·네트워크·현재 시각·난수에 의존하지 않는 순수 함수다. 입력을 변경하지 않고 최대 5개의 고유 게임, 한국어 추천 이유, 시간 완화 내역, 내부 제외 진단을 반환한다. 외부 가중 점수나 적합도 백분율은 없다. 웹 화면·API 연결은 Phase 3이며 현재 준비 화면을 유지한다.
+`src/domain/recommendation/recommend.ts`의 `recommend(games, preferences)`는 UI·React·Next·DB·네트워크·현재 시각·난수에 의존하지 않는 순수 함수다. 입력을 변경하지 않고 최대 5개의 고유 게임, 한국어 추천 이유, 시간 완화 내역, 내부 제외 진단을 반환한다. 외부 가중 점수나 적합도 백분율은 없다. Phase 3에서 홈·추천 결과의 서버 렌더링과 연결했다. 별도 HTTP API를 경유하지 않는다.
 
 `games`는 읽기 전용 unknown 배열이다. 기존 `boardGameRecordSchema`의 출처 검증을 재사용하며 repository가 추가하는 UUID id·ISO createdAt/updatedAt도 허용한다. 게임별 구조 오류는 해당 항목만 제외한다. 출력에 원본 객체 참조를 공유하지 않는다. 같은 입력의 반복 실행은 같은 결과를 내며, 중복이 없는 정상 후보는 입력 순서를 바꾸어도 같은 순위를 낸다.
 
@@ -21,11 +21,11 @@ const preferences = recommendationInputSchema.parse({
   mood: "COOPERATIVE",
   difficulty: "BEGINNER",
 });
-// verifiedRecords는 향후 서버 조회 결과로 전달한다. 여기서 DB를 호출하지 않는다.
+// verifiedRecords는 공개 검토를 통과한 서버 조회 결과로 전달한다. 여기서 DB를 호출하지 않는다.
 const result = recommend(verifiedRecords, preferences);
 ```
 
-시간 선택은 UP_TO_15 / BETWEEN_15_30 / BETWEEN_30_60 / BETWEEN_60_120 / AT_LEAST_120, 분위기는 PARTY / STRATEGY / DEDUCTION / COOPERATIVE / RELAXED, 난이도는 BEGINNER / EASY / INTERMEDIATE / ADVANCED / ANY다. 한국어 레이블은 preferences 모듈에서 제공한다. 실제 URL 쿼리 파싱·폼 구현은 Phase 3 범위다.
+시간 선택은 UP_TO_15 / BETWEEN_15_30 / BETWEEN_30_60 / BETWEEN_60_120 / AT_LEAST_120, 분위기는 PARTY / STRATEGY / DEDUCTION / COOPERATIVE / RELAXED, 난이도는 BEGINNER / EASY / INTERMEDIATE / ADVANCED / ANY다. 한국어 레이블은 preferences 모듈에서 제공한다. Phase 3의 query 모듈이 URL을 엄격하게 파싱하고, 폼과 서버가 같은 계약을 사용한다.
 
 ## 필수 필터와 누락
 1. 기존 데이터 계약으로 출처·필드 값·범위를 검증한다. 필수 인원·시간·출처가 누락되면 제외하며 값을 추정하지 않는다.
@@ -65,7 +65,7 @@ const result = recommend(verifiedRecords, preferences);
 다양성은 VERIFIED 편집의 categories[0]·mechanics[0]을 주요 장르·메커니즘으로 사용한다. 이미 선택된 게임들과 주요 장르가 덜 겹치는 후보를 우선하고, 같으면 주요 메커니즘을 비교한다. 데이터 편집자는 주요 항목을 배열 첫 값으로 관리해야 한다. 누락된 태그를 새 장르로 간주하지 않는다. 다양성 때문에 앞선 시간·유통·선호 조건의 우선순위를 뒤집지 않는다.
 
 ## 결과·추천 이유
-각 recommendation은 카드용 game DTO, reasons, nullable relaxation으로 구성된다. DTO에는 한국어 이름, 가능·추천 인원, 시간 범위·실제 평균(null 가능), 난이도·장르·메커니즘·언어 상태, 확인일과 detailPath가 있다. 권리 확인 이미지가 없으므로 이미지를 생성하거나 외부 URL을 넣지 않는다. detailPath는 향후 상세 페이지용 경로이며 Phase 4 전에는 UI에 연결하지 않는다.
+각 recommendation은 카드용 game DTO, reasons, nullable relaxation으로 구성된다. DTO에는 한국어 이름, 가능·추천 인원, 시간 범위·실제 평균(null 가능), 난이도·장르·메커니즘·언어 상태, 확인일과 detailPath가 있다. 권리 확인 이미지가 없으므로 이미지를 생성하거나 외부 URL을 넣지 않는다. detailPath는 향후 상세 페이지용 경로이며 Phase 3 카드에는 비활성 상세 준비 버튼만 표시한다.
 
 reasons는 PLAYERS / BEST_PLAYERS / TIME / MOOD / DIFFICULTY / LANGUAGE / DOMESTIC_AVAILABILITY 코드와 MATCH / INFO / CAUTION, 한국어 메시지를 갖는다. 가능 인원과 추천 인원을 구별하고, 자체 태그는 자체 검토라는 표현을 사용한다. 품절·재고 미확인·언어 부담도 함께 설명한다. 국내 재고 확인은 확인 시점의 사실이며 현재 재고 보장을 하지 않는다. 국내 인기·최고·정확도 주장은 생성하지 않는다.
 

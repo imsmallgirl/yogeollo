@@ -10,3 +10,4 @@ test-results/
 .DS_Store
 .pnpm-store/
 src/generated/prisma/
+.next-e2e/

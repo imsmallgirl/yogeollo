@@ -1,6 +1,6 @@
 # 개발 시작
 
-기존 프로젝트 설명은 `README.md`에 그대로 보존했습니다. 현재 **Phase 2(추천 엔진)**까지 구현했으며 추천 서비스는 아직 동작하지 않습니다.
+기존 프로젝트 설명은 `README.md`에 그대로 보존했습니다. 현재 **Phase 3(홈·추천 결과 UI)**까지 구현했습니다. 개발 환경에서는 기존 게임 1개로 추천 흐름을 미리 볼 수 있습니다.
 
 ## 실행
 Node 24.x와 pnpm 11.5.1을 사용합니다.
@@ -10,7 +10,7 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-http://localhost:3000 에서 준비 화면을 확인합니다. `.env.example`을 참고해 필요할 때 `.env.local`을 작성하세요. 기본 화면에는 DB나 비밀키가 필요하지 않습니다. 준비 화면은 DB에 접속하지 않습니다. DB 작업은 아래 절차로 별도 실행합니다.
+http://localhost:3000 에서 조건을 선택해 추천 결과를 확인합니다. `.env.example`을 참고해 필요할 때 `.env.local`을 작성하세요. 개발 기본 미리보기에는 DB나 비밀키가 필요하지 않습니다. DB 작업은 아래 절차로 별도 실행합니다.
 
 ## 검사
 ```sh
@@ -22,7 +22,7 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-Playwright는 전용 3147 포트에 로컬 서버를 자동 실행하며 desktop/mobile Chromium을 검사합니다. 실제 iOS Safari 검증은 별도입니다. production 실행은 `pnpm build` 후 `pnpm start`입니다. 준비 화면은 검색 색인을 비활성화했습니다.
+Playwright는 3173 포트의 격리된 개발 서버와 3174 포트의 운영 서버를 자동 실행합니다. 먼저 `pnpm build`가 성공해야 합니다. desktop/mobile/320px Chromium과 운영 환경의 미검토 데이터 차단을 검사합니다. 기존 3147 서버는 재사용하거나 종료하지 않습니다. 실제 iOS Safari 검증은 별도입니다. production 실행은 `pnpm build` 후 `pnpm start`입니다. 정식 공개 전까지 검색 색인을 비활성화했습니다.
 
 설계와 다음 단계는 [개발 계획](docs/DEVELOPMENT_PLAN.md), [아키텍처](docs/ARCHITECTURE.md), [Phase 0 보고서](docs/PHASE_0_REPORT.md)를 참고하세요. 사용자 승인 전에는 다음 단계를 구현하지 않습니다.
 
@@ -51,6 +51,15 @@ TEST_DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_test' pnpm
 통합 테스트는 DB에 샘플을 입력하고 seed 재실행·SQL 제약·검증 상태·출처·기존 편집 보존을 확인합니다. 실제 서비스 DB를 사용하지 마세요. 전체 결과는 [Phase 1 보고서](docs/PHASE_1_REPORT.md)에 기록합니다.
 
 ## 추천 엔진 (Phase 2)
-추천 함수는 `src/domain/recommendation/recommend.ts`, 조건 계약은 `preferences.ts`에 있습니다. 네트워크·DB 없이 `pnpm test`로 추천 로직을 검사할 수 있습니다. 데이터 repository와의 실제 화면 연결은 Phase 3입니다. 웹사이트는 여전히 준비 화면이며, Phase 2 완료가 데이터 공개 승인이나 다음 단계 진행 승인을 뜻하지 않습니다.
+추천 함수는 `src/domain/recommendation/recommend.ts`, 조건 계약은 `preferences.ts`에 있습니다. 네트워크·DB 없이 `pnpm test`로 추천 로직을 검사할 수 있습니다. Phase 3에서 이 엔진을 결과 화면과 연결했습니다. 기능 구현 완료는 데이터 공개 승인이나 다음 단계 진행 승인을 뜻하지 않습니다.
 
 추천 입력과 정렬·완화 정책은 [추천 엔진 문서](docs/RECOMMENDATION_ENGINE.md), 변경 파일과 검증 결과는 [Phase 2 보고서](docs/PHASE_2_REPORT.md)를 참고하세요.
+
+## 홈·결과와 데이터 모드 (Phase 3)
+홈에서 인원·시간·분위기·난이도를 고르면 `/recommend`의 URL에 조건을 저장합니다. 7명 이상은 정확한 정수 인원을 입력합니다. 결과에서 조건을 다시 고르면 이전 값을 복원합니다. 중복 키·잘못된 조건은 추천 전에 검증합니다. 상세 페이지와 룰렛은 아직 준비 중입니다.
+
+GAME_DATA_MODE 미설정 시 development/test는 preview, 운영은 database입니다. 개발 preview는 기존 샘플 1개만 사용하고 화면에 미리보기임을 표시합니다. 실제 게임 정보를 추정해 추가하지 않습니다. 운영은 preview 지정으로도 미검토 샘플을 표시하지 않습니다.
+
+운영 추천에는 실제 출처·판본·이용 범위 검토를 마친 `data/publication-approvals.json` 기록과 DB의 VERIFIED 사실이 모두 필요합니다. 현재 공개 검토 목록은 비어 있어 운영 실행에서는 ‘게임 정보를 확인하고 있어요’가 정상입니다. 승인 기록을 임의로 만들지 마세요. 검토된 자료가 존재하는데 DB 조회가 실패하면 별도 오류 안내를 제공하고 샘플로 대체하지 않습니다.
+
+새 의존성·DB 스키마 변경은 없습니다. [Phase 3 보고서](docs/PHASE_3_REPORT.md)에 검사와 미완료 사항을 정리합니다. 다음 Phase는 별도 승인 후 진행합니다.

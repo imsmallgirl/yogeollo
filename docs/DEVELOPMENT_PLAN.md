@@ -1,7 +1,7 @@
 # 개발 계획과 단계별 보고
 
 ## 승인 경계
-Phase 0·1을 완료했고 사용자의 다음 단계 승인으로 Phase 2 추천 엔진을 구현했다. 별도 승인 전까지 Phase 3를 진행하지 않는다.
+Phase 0~2를 완료했고 사용자의 다음 단계 승인으로 Phase 3 홈·추천 결과를 구현했다. 별도 승인 전까지 Phase 4를 진행하지 않는다.
 
 ## Phase 0 — 프로젝트 초기화·문서
 변경 파일: 루트 package/lock/TypeScript/Next/PostCSS/ESLint/shadcn/Vitest/Playwright/환경 설정, `src/app/*`, `src/components/ui/button.tsx`, `src/lib/*`, `tests/e2e/home.spec.ts`, `docs/*.md`, `GETTING_STARTED.md`.
@@ -16,7 +16,7 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 ## Phase 2 — 추천 엔진 (구현 완료)
 순수 함수와 Zod 입력 스키마, 필터·결정적 순위·완화·이유. 완료: 모든 추천 테스트와 중복·누락·결정성 검증.
 
-## Phase 3 — 홈·결과
+## Phase 3 — 홈·결과 (구현 완료)
 입력 폼, 7명 이상 정수 입력, URL 조건 파싱, 결과 카드, 빈 결과·완화 안내. 완료: 키보드·모바일·잘못된 쿼리 테스트.
 
 ## Phase 4 — 상세·룰렛·소개
@@ -33,3 +33,6 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 
 ### Phase 2 작업 기록
 `src/domain/recommendation`에 Zod 조건 입력·독립 DTO·순수 추천 함수·시간 정책·한국어 이유·단위 테스트를 추가했다. 전체 단위 테스트 119개와 lint·타입·빌드를 통과했다. 변경 파일과 세부 결과는 `docs/PHASE_2_REPORT.md`를 따른다. DB·실데이터·UI·API는 변경하지 않았으며 Phase 3는 승인 대기다.
+
+### Phase 3 작업 기록
+재사용 가능한 조건 폼·카드·요약·안내 컴포넌트, URL 검증과 조건 복원, 서버 추천 연결, 데이터 미리보기/공개 검토 경계를 구현했다. 실제 데이터·검증 상태·DB 모델·추천 순위는 변경하지 않았다. 검사·변경 파일·미완료 사항은 `docs/PHASE_3_REPORT.md`를 따른다. 상세·룰렛은 Phase 4 승인 대기다.
