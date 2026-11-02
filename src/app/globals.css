@@ -1,0 +1,5 @@
+@import "tailwindcss";
+:root { --background: #fffaf1; --foreground: #29271f; --primary: #c3452e; --primary-foreground: #ffffff; --muted: #f2ebdf; --muted-foreground: #686258; --border: #ded6c8; --ring: #c3452e; --radius: 0.75rem; }
+@theme inline { --color-background: var(--background); --color-foreground: var(--foreground); --color-primary: var(--primary); --color-primary-foreground: var(--primary-foreground); --color-muted: var(--muted); --color-muted-foreground: var(--muted-foreground); --color-border: var(--border); --color-ring: var(--ring); --font-sans: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+body { background: var(--background); color: var(--foreground); font-family: Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+* { box-sizing: border-box; }
