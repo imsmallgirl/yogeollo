@@ -42,3 +42,6 @@ seed는 전체 입력을 먼저 검증한 뒤 트랜잭션 안에서 slug 기준
 
 ## Phase 4 사용 범위
 물리 모델·migration·seed는 변경하지 않았다. 상세는 기존 공개 검토 카탈로그를 통과한 사실과 VERIFIED 편집만 운영에 표시한다. 개발용 규칙 요약 DRAFT는 별도 파일에서 preview에만 연결하며 DB 값을 덮어쓰거나 추천 태그를 승격하지 않는다. 룰렛 선택은 브라우저 상태이며 DB에 저장하지 않는다.
+
+## Phase 5 구현
+ImportBatch는 UUID, 유일 SHA-256 digest, JSON payload/baseState/plan, PENDING→APPROVED/REJECTED→(승인만)APPLIED 상태, 검토자·사유·시각, 반영 시각·결과를 저장한다. status+createdAt 인덱스와 상태·JSON·해시 CHECK를 추가했다. SQL trigger로 원문·기준·계획 변경/삭제와 잘못된 전이를 차단한다. SourceObservation은 append-only이며 재검증은 새 관측으로 기록한다. 승인과 반영 시 기준 스냅샷을 대조하고 전체 쓰기는 Serializable 트랜잭션으로 처리한다. 기존 자체 편집·관측·생략된 ID는 보존한다. migration: 20261102190000_import_batches. 테스트는 기존 DB와 별도 IMPORT_TEST_DATABASE_URL을 사용한다.

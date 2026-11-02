@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
@@ -24,7 +24,13 @@
     "db:deploy": "prisma migrate deploy",
     "db:status": "prisma migrate status",
     "db:seed": "prisma db seed",
-    "test:db": "vitest run --config vitest.database.config.ts"
+    "test:db": "vitest run --config vitest.database.config.ts",
+    "data:check": "tsx scripts/data-import.ts check",
+    "data:stage": "tsx scripts/data-import.ts stage",
+    "data:inspect": "tsx scripts/data-import.ts inspect",
+    "data:review": "tsx scripts/data-import.ts review",
+    "data:apply": "tsx scripts/data-import.ts apply",
+    "data:publication": "tsx scripts/data-import.ts publication"
   },
   "dependencies": {
     "@next/env": "16.4.4",

@@ -1,10 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import splendor from "../../data/games/splendor.json";
+import { publicationDigest } from "../domain/data-import/digest";
+import { boardGameRecordSchema } from "../domain/games/schema";
 vi.mock("server-only", () => ({}));
 vi.mock("./games", () => ({ listVerifiedBoardGames: vi.fn() }));
 import { catalogMode, loadRecommendationCatalog } from "./catalog";
 
-const testApproval = { approvedGames: [{ slug: "splendor", reviewedBy: "테스트 전용 승인", approvedAt: "2026-11-02T16:54:27Z", usageBasis: "테스트 함수 내부에서만 사용" }] };
+const testApproval = { approvedGames: [{ slug: "splendor", reviewedBy: "테스트 전용 승인", approvedAt: "2026-11-02T16:54:27Z", usageBasis: "테스트 함수 내부에서만 사용", recordDigest: publicationDigest(boardGameRecordSchema.parse(splendor)) }] };
 
 describe("추천 데이터 공개 경계", () => {
   it("개발 환경 기본값만 기존 샘플 미리보기로 연결한다", async () => {
@@ -53,4 +55,11 @@ describe("추천 데이터 공개 경계", () => {
   it("승인 게임이 DB에 없거나 검증 만료이면 준비 중 상태다", async () => {
     expect(await loadRecommendationCatalog({ environment: { NODE_ENV: "production" }, approvals: testApproval, listGames: async () => [{ ...splendor, facts: { ...splendor.facts, verificationStatus: "STALE" } }] })).toEqual({ status: "pending" });
   });
+});
+
+
+it("공개 승인 후 출처 내용이 바뀌면 재검토 전까지 노출하지 않는다", async () => {
+  const changed = structuredClone(splendor);
+  changed.sources[0].observations[0].evidenceNoteKo += " 변경";
+  expect(await loadRecommendationCatalog({ environment: { NODE_ENV: "production" }, approvals: testApproval, listGames: async () => [changed] })).toEqual({ status: "pending" });
 });

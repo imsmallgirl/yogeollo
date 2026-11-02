@@ -46,3 +46,8 @@ Playwright는 기존 개발 서버와 충돌하지 않도록 3173 포트의 `.ne
 `src/domain/roulette/roulette.ts`는 후보 계약, 선택 교집합, 주입된 uint32 난수원의 편향 없는 index 선택, 회전 각도를 분리한다. Client Component는 crypto.getRandomValues로 후보를 먼저 선택하고 실제 구간 중앙이 포인터에 오도록 CSS 회전한다. ref로 같은 이벤트 구간의 중복 실행을 차단하고 회전 중 후보를 고정한다. transitionend·타이머는 동일 선택을 완료하며 unmount에서 정리한다. 단일 후보는 바로 선택하고 빈 선택은 실행하지 않는다. 동작 줄이기 설정과 회전 중 설정 변경도 처리한다. 후보 목록 교체는 상태를 초기화한다.
 
 `/about`은 추천·데이터·권리·룰렛 원칙을 설명한다. 소개를 sitemap에 추가했으나 개발용 상세 URL은 포함하지 않으며 noindex 정책은 유지한다. 새 런타임 라이브러리는 없고 DOM 상호작용 테스트용 jsdom 29.1.1만 개발 의존성에 추가했다. Node 24 기준과 호환되는 안정 버전을 사용했다. 테스트는 182개와 E2E 32개로 확장했다.
+
+## Phase 5 구현
+CLI scripts/data-import.ts → Zod 입력 계약·순수 변경 계획 → prisma/import-service.ts의 Serializable 트랜잭션 → ImportBatch 및 기존 게임 관계로 연결한다. 웹 API나 Client Component에서 가져오기 서비스를 호출하지 않는다. src/domain/data-import/digest.ts는 Node crypto를 사용하는 서버/CLI 전용이다. 공개 카탈로그는 recordDigest까지 대조하며 미검토 편집은 해시에서 제외한다. 신규 의존성은 없다. 상세 운영 절차는 DATA_IMPORT.md를 따른다.
+
+Phase 5 검증 환경에서는 Turbopack production 빌드의 내부 포트 생성이 권한 허용 후에도 실패해 build 스크립트에 공식 `--webpack` 옵션을 명시했다. 개발 서버는 Turbopack을 유지하고 같은 App Router·Server Components를 사용한다.

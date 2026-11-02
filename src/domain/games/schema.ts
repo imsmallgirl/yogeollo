@@ -90,7 +90,7 @@ const sourceSchema = z.strictObject({
     verificationStatus: verificationStatusSchema,
     checkedFields: z.array(factFieldSchema).min(1).refine((values) => new Set(values).size === values.length),
     observedFacts: observedFactsSchema,
-    collectionMethod: z.literal("MANUAL_REVIEW"),
+    collectionMethod: z.enum(["MANUAL_REVIEW", "PERMITTED_FILE"]),
     reviewedBy: text,
     evidenceNoteKo: text,
     usageStatus: z.enum(["FACTS_ONLY", "PERMISSION_GRANTED", "OPEN_LICENSE", "UNCONFIRMED"]),

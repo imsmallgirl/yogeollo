@@ -166,3 +166,28 @@ model ExternalGameId {
   @@unique([provider, externalId])
   @@unique([boardGameId, provider])
 }
+
+// A local operator workflow; approval is not publication or external license verification.
+enum ImportStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  APPLIED
+}
+
+model ImportBatch {
+  id          String       @id @default(uuid()) @db.Uuid
+  digest      String       @unique
+  payload     Json
+  baseState   Json
+  plan        Json
+  status      ImportStatus @default(PENDING)
+  reviewedBy  String?
+  reviewNotes String?
+  reviewedAt  DateTime?    @db.Timestamptz(3)
+  appliedAt   DateTime?    @db.Timestamptz(3)
+  result      Json?
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+}

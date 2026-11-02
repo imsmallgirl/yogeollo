@@ -54,3 +54,6 @@ Phase 1에는 스플렌더 기본판 **1개**의 소량 사실 확인 샘플과 
 이 파일은 DRAFT 개발용 초안이며 사람의 편집 검토와 한국 유통 판본 대조는 미완료다. preview 상세에서만 한계를 표시하고 제공한다. 기존 GameEditorial의 PENDING 상태나 공개 검토 목록은 변경하지 않았으며 운영은 이 초안을 읽지 않는다. 규칙 예외를 모두 다룬 문서가 아니므로 보유한 판본의 공식 규칙서를 우선 안내한다. 외부 이미지·규칙 원문을 앱에 복제하지 않았다. 향후 검토가 끝난 안내는 별도 승인과 VERIFIED 편집 절차를 거쳐야 한다.
 
 룰렛 구현은 [Web Crypto getRandomValues 문서](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues)를 참고했으며 UI 후보에 동일 가중치를 부여한다. 이 난수는 추천 순위나 근거 없는 적합도 점수에 사용하지 않는다.
+
+## Phase 5 구현
+새 외부 요청·크롤링·BGG API 호출은 하지 않았다. 수집 권한이 없는 상태를 유지한 기존 샘플의 구조 예제를 data/imports에 추가했고 실제 자료로 승인·반영하지 않았다. 허가된 파일·수동 대조 기록은 acquisition.permissionBasis와 관측의 usageStatus/usageNoteKo로 근거를 남기며 문자열만으로 실제 권리를 자동 판정하지 않는다. BGG 타입·도메인·제공자는 차단한다. 공개 승인 목록은 0개이며 앞으로 recordDigest를 포함해야 한다. 절차와 한계는 DATA_IMPORT.md를 따른다.

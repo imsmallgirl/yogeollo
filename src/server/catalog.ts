@@ -4,6 +4,7 @@ import splendor from "../../data/games/splendor.json";
 import approvals from "../../data/publication-approvals.json";
 import { recommendationGameSchema, type RecommendationGame } from "../domain/recommendation/types";
 import { listVerifiedBoardGames } from "./games";
+import { publicationDigest } from "../domain/data-import/digest";
 
 interface CatalogEnvironment { NODE_ENV?: string; GAME_DATA_MODE?: string }
 export type RecommendationCatalog =
@@ -16,6 +17,7 @@ const approvalsSchema = z.strictObject({
     reviewedBy: z.string().trim().min(1),
     approvedAt: z.iso.datetime({ offset: true }),
     usageBasis: z.string().trim().min(1),
+    recordDigest: z.string().regex(/^[a-f0-9]{64}$/),
   })).refine((items) => new Set(items.map((item) => item.slug)).size === items.length),
 });
 
@@ -43,12 +45,12 @@ export async function loadRecommendationCatalog(options: {
   if (publication.data.approvedGames.length === 0) return { status: "pending" };
 
   try {
-    const approvedSlugs = new Set(publication.data.approvedGames.map((item) => item.slug));
+    const approved = new Map(publication.data.approvedGames.map((item) => [item.slug, item.recordDigest]));
     const records = await (options.listGames ?? listVerifiedBoardGames)();
     const games: RecommendationGame[] = [];
     for (const record of records) {
       const result = recommendationGameSchema.safeParse(record);
-      if (result.success && result.data.facts.verificationStatus === "VERIFIED" && approvedSlugs.has(result.data.facts.slug)) {
+      if (result.success && result.data.facts.verificationStatus === "VERIFIED" && approved.get(result.data.facts.slug) === publicationDigest(result.data)) {
         games.push(result.data);
       }
     }

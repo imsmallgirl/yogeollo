@@ -45,7 +45,8 @@ DB 통합 테스트는 `_test`로 끝나는 전용 DB에 migration을 먼저 적
 
 ```sh
 DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_test' DIRECT_URL='' pnpm db:deploy
-TEST_DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_test' pnpm test:db
+DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_import_test' DIRECT_URL='' pnpm db:deploy
+TEST_DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_test' IMPORT_TEST_DATABASE_URL='postgresql://USER:PASSWORD@localhost:5432/yogeollo_import_test' pnpm test:db
 ```
 
 통합 테스트는 DB에 샘플을 입력하고 seed 재실행·SQL 제약·검증 상태·출처·기존 편집 보존을 확인합니다. 실제 서비스 DB를 사용하지 마세요. 전체 결과는 [Phase 1 보고서](docs/PHASE_1_REPORT.md)에 기록합니다.
@@ -70,3 +71,9 @@ GAME_DATA_MODE 미설정 시 development/test는 preview, 운영은 database입�
 현재 실제 샘플은 1개라 룰렛의 단일 후보 선택은 즉시 완료됩니다. 2~5개가 추천되면 선택한 후보만 동일 가중치로 뽑아 실제로 회전합니다. 후보를 모두 해제하면 실행할 수 없고, 동작 줄이기 설정에서는 회전 없이 결과를 표시합니다. 여러 후보를 보여주려고 가짜 게임을 추가하지 않았습니다.
 
 `pnpm test`에는 jsdom 기반 다중 후보 상호작용·중복 실행·동작 줄이기 테스트를 포함합니다. `pnpm build` 후 `pnpm test:e2e`는 desktop/mobile/320px의 상세·소개·단일 후보·빈 선택과 실제 production의 상세 404 경계를 확인합니다. [Phase 4 보고서](docs/PHASE_4_REPORT.md)에 변경 파일과 한계를 정리합니다. Phase 5는 사용자 승인 전까지 진행하지 않습니다.
+
+## 검토 기반 가져오기 (Phase 5)
+
+권한을 확인한 JSON 파일을 오프라인 검사 → 대기 접수 → 해시 대조·수동 검토 → 원자적 반영 순서로 처리합니다. 명령과 운영 절차는 [데이터 가져오기 문서](docs/DATA_IMPORT.md)를 따르세요. 자동 크롤링·BGG 연동·실제 자료의 승인·공개는 수행하지 않았습니다. 기존 실제 샘플은 1개, 공개 승인 목록은 0개입니다. 공개 목록에는 이제 검토한 내용의 recordDigest도 필요하며 변경된 데이터는 재검토 전까지 노출하지 않습니다. [Phase 5 보고서](docs/PHASE_5_REPORT.md)에 결과를 기록합니다. Phase 6는 별도 승인 후 진행합니다.
+
+빌드는 `next build --webpack`을 사용합니다. 현재 실행 환경에서 Turbopack production 빌드의 내부 포트 생성이 차단되어, Next가 제공하는 Webpack 옵션을 명시했습니다. 개발 서버는 기존 Turbopack을 유지합니다.
