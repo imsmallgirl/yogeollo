@@ -47,3 +47,10 @@ Phase 1에는 스플렌더 기본판 **1개**의 소량 사실 확인 샘플과 
 개발 환경에서만 기존 샘플 1개를 미리보기로 화면에 연결했다. 자체 편집 PENDING 상태는 유지하고 엔진이 이를 추천 근거로 사용하지 않는다. 이미지는 표시하지 않으며 규칙 원문도 추가하지 않았다.
 
 운영 카탈로그는 `data/publication-approvals.json`의 approvedGames 목록을 사용한다. 각 기록에는 slug·실제 검토자 reviewedBy·ISO approvedAt·이용 근거 usageBasis가 필요하다. 현재 빈 목록이며 공개 검토를 허위로 기록하지 않았다. 실제 출처·판본·이용 범위 검토를 마친 뒤 승인된 게임만 기록해야 하며, 화면 확인을 위해 이 목록을 임의로 채우면 안 된다. 기존 서버 조회의 VERIFIED 상태와 공개 검토를 모두 통과해야 운영 후보가 된다. 운영에서는 preview 환경변수나 쿼리로 이 경계를 우회하지 못한다. 이 목록은 대량 수집 기능이 아니다.
+
+## Phase 4 자체 규칙 요약
+[퍼블리셔 제품 안내](https://www.asmodee.it/product/splendor/)가 연결하는 [공식 기본판 규칙서](https://cdn.svc.asmodee.net/production-asmodeeit/uploads/2022/09/Splendor_IT.pdf) PDF 2~4쪽을 텍스트와 렌더링으로 대조했다. 원문·이미지는 저장소에 넣지 않고 `data/guides/splendor.json`에 짧은 한국어 핵심 요약을 직접 작성했다. authoredAt·author·출처 URL·확인일·관련 쪽수를 기록한다.
+
+이 파일은 DRAFT 개발용 초안이며 사람의 편집 검토와 한국 유통 판본 대조는 미완료다. preview 상세에서만 한계를 표시하고 제공한다. 기존 GameEditorial의 PENDING 상태나 공개 검토 목록은 변경하지 않았으며 운영은 이 초안을 읽지 않는다. 규칙 예외를 모두 다룬 문서가 아니므로 보유한 판본의 공식 규칙서를 우선 안내한다. 외부 이미지·규칙 원문을 앱에 복제하지 않았다. 향후 검토가 끝난 안내는 별도 승인과 VERIFIED 편집 절차를 거쳐야 한다.
+
+룰렛 구현은 [Web Crypto getRandomValues 문서](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues)를 참고했으며 UI 후보에 동일 가중치를 부여한다. 이 난수는 추천 순위나 근거 없는 적합도 점수에 사용하지 않는다.

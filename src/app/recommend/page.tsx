@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, SlidersHorizontal } from "lucide-react";
 import { EmptyState } from "@/components/recommendation/empty-state";
 import { GameCard } from "@/components/recommendation/game-card";
+import { GameRoulette } from "@/components/recommendation/game-roulette";
 import { PreferenceSummary } from "@/components/recommendation/preference-summary";
 import { Notice } from "@/components/ui/notice";
 import { buttonVariants } from "@/components/ui/button";
@@ -28,6 +29,7 @@ export default async function RecommendPage({ searchParams }: PageProps<"/recomm
           <div className="flex flex-wrap items-center justify-between gap-3 pt-3"><p className="text-lg font-bold">우리 모임의 후보 <span className="text-primary">{data.result.recommendations.length}개</span></p><Link href={editHref} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted-foreground"><SlidersHorizontal aria-hidden="true" className="size-4" />조건 바꾸기</Link></div>
           {data.result.notices.filter((notice) => !notice.startsWith("시간 조건")).map((notice) => <p key={notice} role="status" className="text-sm leading-7 text-muted-foreground">{notice}</p>)}
           <section aria-label="추천 게임" className="space-y-5">{data.result.recommendations.map((recommendation, index) => <GameCard key={recommendation.game.slug} recommendation={recommendation} rank={index + 1} />)}</section>
+          <GameRoulette candidates={data.result.recommendations.map(({ game }) => ({ slug: game.slug, nameKo: game.nameKo }))} />
         </>}
       </>}
     </div>

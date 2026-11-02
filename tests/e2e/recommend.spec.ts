@@ -20,7 +20,7 @@ test("홈에서 조건을 고르고 결과·확인 정보·조건 복원까지 �
   await expect(page.getByRole("heading", { name: "스플렌더", exact: true })).toBeVisible();
   await expect(page.getByText("미리보기 결과예요", { exact: true })).toBeVisible();
   await expect(page.getByText("표기 시간", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "상세 소개 준비 중" })).toBeDisabled();
+  await expect(page.getByRole("link", { name: "게임 자세히 보기", exact: true })).toHaveAttribute("href", "/games/splendor");
   await checkWidth(page);
   await page.screenshot({ path: testInfo.outputPath("results.png"), fullPage: true });
   await page.getByText(/함께 확인할 정보/).click();

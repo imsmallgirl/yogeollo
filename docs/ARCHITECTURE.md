@@ -13,7 +13,7 @@ Next.js App Router / React / TypeScript strict / Tailwind CSS v4. Server Compone
 - `src/domain/games`, `data/games`: Zod 데이터 계약과 출처 관측을 기록한 개발용 샘플 1개.
 - `tests/e2e`, `docs`: 브라우저 테스트와 설계 문서.
 
-Phase 3 연결 흐름: 폼 → 공유 가능한 GET URL → 서버의 Zod 쿼리 검증 → 카탈로그 공개 검토 확인 → 기존 repository → 순수 추천 함수 → 결과 카드 서버 렌더링. 잘못된 조건은 DB 조회 전에 차단한다. 개발 미리보기는 기존 샘플만 사용한다. 폼 상태·검증 오류·라우팅 전환만 Client Component이며 카드·조건 요약·빈 결과·오류 안내는 Server Components다. 룰렛은 Phase 4에서 구현한다. 단순 서버 렌더링에 자기 API를 호출하지 않는다. 외부 API가 필요할 때만 Route Handler를 만들고 입력과 응답을 검증한다.
+Phase 3 연결 흐름: 폼 → 공유 가능한 GET URL → 서버의 Zod 쿼리 검증 → 카탈로그 공개 검토 확인 → 기존 repository → 순수 추천 함수 → 결과 카드 서버 렌더링. 잘못된 조건은 DB 조회 전에 차단한다. 개발 미리보기는 기존 샘플만 사용한다. 폼 상태·검증 오류·라우팅 전환만 Client Component이며 카드·조건 요약·빈 결과·오류 안내는 Server Components다. Phase 4의 룰렛은 후보 이름·slug만 Client Component에 전달하고 브라우저에서 선택·회전한다. 단순 서버 렌더링에 자기 API를 호출하지 않는다. 외부 API가 필요할 때만 Route Handler를 만들고 입력과 응답을 검증한다.
 
 ## 런타임·환경
 Node 24.x, pnpm 11.5.1. `package.json`의 정확 버전과 `pnpm-lock.yaml`이 재현 기준이다. Next·React peer 조건은 레지스트리에서 확인했다. Prisma latest가 RC여서 안정 7.10.1로 고정했다. Phase 1에 Prisma 7 adapter·환경 로더·생성 단계를 추가했다. 설치·타입·빌드에 generate만 포함하며 실제 DB 연결·migration·seed는 실행하지 않는다.
@@ -39,3 +39,10 @@ ESLint flat config, `next typegen && tsc --noEmit`, Vitest Node 환경, Playwrig
 `src/server/catalog.ts`는 GAME_DATA_MODE를 처리한다. 미설정 시 development/test는 preview, 그 외는 database다. preview는 기존 샘플 1개를 읽고 UI에 미리보기 상태를 명시한다. 운영에서는 preview를 설정해도 차단한다. database 모드는 `data/publication-approvals.json`의 공개 검토 기록이 있는 slug 중 VERIFIED 사실만 반환한다. 목록은 현재 비어 있다. 승인 목록 오류나 DB 실패는 안전한 unavailable 상태이며 샘플로 대체하지 않는다. 공개 검토는 수집 파이프라인이나 배포 승인을 대신하지 않는다.
 
 Playwright는 기존 개발 서버와 충돌하지 않도록 3173 포트의 `.next-e2e` dev 서버와 3174 포트의 `.next` production 서버를 사용한다. production 검증을 위해 `pnpm build`를 먼저 실행한다. YOGEOLLO_E2E는 테스트용 distDir만 바꾸며 일반 실행 경로는 유지한다. 생성 타입·번들·스크린샷은 Git에서 제외한다. 현재 단위 테스트 149개와 브라우저 테스트 19개를 통과했다.
+
+## Phase 4 상세·룰렛·소개
+`/games/[slug]`는 params를 await하고 요청 시 기존 카탈로그의 공개 검토 경계를 적용한다. `src/server/game-detail.ts`의 React cache로 메타데이터·본문의 동일 요청 조회를 재사용한다. 잘못된 slug는 조회 전에 차단하고 미공개·미존재 게임은 404, 자료 오류는 별도 안내를 반환한다. 운영은 VERIFIED 편집만 사용한다. 개발용 `data/guides/splendor.json`은 DRAFT 자체 요약으로 분리했으며 preview에서만 표시하고 추천 태그의 상태를 변경하지 않는다. 출처·작성 정보의 날짜는 한국 시간으로 표시한다.
+
+`src/domain/roulette/roulette.ts`는 후보 계약, 선택 교집합, 주입된 uint32 난수원의 편향 없는 index 선택, 회전 각도를 분리한다. Client Component는 crypto.getRandomValues로 후보를 먼저 선택하고 실제 구간 중앙이 포인터에 오도록 CSS 회전한다. ref로 같은 이벤트 구간의 중복 실행을 차단하고 회전 중 후보를 고정한다. transitionend·타이머는 동일 선택을 완료하며 unmount에서 정리한다. 단일 후보는 바로 선택하고 빈 선택은 실행하지 않는다. 동작 줄이기 설정과 회전 중 설정 변경도 처리한다. 후보 목록 교체는 상태를 초기화한다.
+
+`/about`은 추천·데이터·권리·룰렛 원칙을 설명한다. 소개를 sitemap에 추가했으나 개발용 상세 URL은 포함하지 않으며 noindex 정책은 유지한다. 새 런타임 라이브러리는 없고 DOM 상호작용 테스트용 jsdom 29.1.1만 개발 의존성에 추가했다. Node 24 기준과 호환되는 안정 버전을 사용했다. 테스트는 182개와 E2E 32개로 확장했다.

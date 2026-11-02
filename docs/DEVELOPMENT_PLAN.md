@@ -1,7 +1,7 @@
 # 개발 계획과 단계별 보고
 
 ## 승인 경계
-Phase 0~2를 완료했고 사용자의 다음 단계 승인으로 Phase 3 홈·추천 결과를 구현했다. 별도 승인 전까지 Phase 4를 진행하지 않는다.
+Phase 0~3을 완료했고 사용자의 다음 단계 승인으로 Phase 4 상세·룰렛·소개를 구현했다. 별도 승인 전까지 Phase 5를 진행하지 않는다.
 
 ## Phase 0 — 프로젝트 초기화·문서
 변경 파일: 루트 package/lock/TypeScript/Next/PostCSS/ESLint/shadcn/Vitest/Playwright/환경 설정, `src/app/*`, `src/components/ui/button.tsx`, `src/lib/*`, `tests/e2e/home.spec.ts`, `docs/*.md`, `GETTING_STARTED.md`.
@@ -19,7 +19,7 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 ## Phase 3 — 홈·결과 (구현 완료)
 입력 폼, 7명 이상 정수 입력, URL 조건 파싱, 결과 카드, 빈 결과·완화 안내. 완료: 키보드·모바일·잘못된 쿼리 테스트.
 
-## Phase 4 — 상세·룰렛·소개
+## Phase 4 — 상세·룰렛·소개 (구현 완료)
 자체 작성 규칙 요약, 상세 metadata·404, `/about`, 후보 선택과 실제 랜덤 룰렛. 완료: 상세 콘텐츠, 빈/단일/다중 후보, 중복 실행과 reduced-motion 테스트.
 
 ## Phase 5 — 수집 파이프라인
@@ -36,3 +36,6 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 
 ### Phase 3 작업 기록
 재사용 가능한 조건 폼·카드·요약·안내 컴포넌트, URL 검증과 조건 복원, 서버 추천 연결, 데이터 미리보기/공개 검토 경계를 구현했다. 실제 데이터·검증 상태·DB 모델·추천 순위는 변경하지 않았다. 검사·변경 파일·미완료 사항은 `docs/PHASE_3_REPORT.md`를 따른다. 상세·룰렛은 Phase 4 승인 대기다.
+
+### Phase 4 작업 기록
+상세·소개 라우트, 메타데이터·404, 출처 대조 후 자체 작성한 개발용 요약, 실제 후보 선택 룰렛을 추가했다. 상세도 기존 공개 검토 경계를 적용하며 미검토 편집의 검증 상태는 유지했다. 단위·DOM 테스트 182개와 브라우저 테스트 32개를 통과했다. 변경 파일과 한계는 `docs/PHASE_4_REPORT.md`를 따른다. 데이터 수집 파이프라인은 Phase 5 승인 대기다.

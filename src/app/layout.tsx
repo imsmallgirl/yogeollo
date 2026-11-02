@@ -13,6 +13,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <a href="#main" className="sr-only z-50 focus:not-sr-only focus:absolute focus:rounded-lg focus:bg-background focus:p-4 focus:outline-ring">본문으로 건너뛰기</a>
     <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-6 sm:px-8 sm:py-7"><Link href="/" aria-label="요걸로 홈" className="flex min-h-11 items-center gap-2 text-2xl font-extrabold tracking-tight"><Dices aria-hidden="true" className="size-7 text-primary" />요걸로<span className="ml-1 text-xs font-normal tracking-normal text-muted-foreground">yogeollo</span></Link><span className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">{catalogMode() === "preview" ? "개발 미리보기" : "서비스 준비 중"}</span></header>
     {children}
-    <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:px-8"><span className="font-semibold">요걸로 · 우리 모임의 다음 한 판</span><span>함께 고르는 시간도 즐겁게.</span></footer>
+    <footer className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-8 text-xs text-muted-foreground sm:px-8"><span className="font-semibold">요걸로 · 우리 모임의 다음 한 판</span><Link href="/about" className="inline-flex min-h-11 items-center underline-offset-4 hover:underline">요걸로 소개</Link></footer>
   </body></html>;
 }

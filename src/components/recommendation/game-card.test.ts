@@ -15,8 +15,8 @@ describe("추천 카드 정보 표시", () => {
     expect(html).toContain("표기 시간");
     expect(html).not.toContain("평균 시간");
     expect(html).toContain("아직 확인 중");
-    expect(html).toContain("상세 소개 준비 중");
-    expect(html).not.toContain('href="/games/');
+    expect(html).toContain("게임 자세히 보기");
+    expect(html).toContain('href="/games/splendor"');
   });
   it("시간 완화와 실제 범위를 접힌 영역 밖에서 바로 알린다", () => {
     const recommendation = recommend([makeGame("test-only-long", { facts: { minPlayTime: 45, maxPlayTime: 90 } })], defaultPreferences).recommendations[0];

@@ -65,7 +65,7 @@ const result = recommend(verifiedRecords, preferences);
 다양성은 VERIFIED 편집의 categories[0]·mechanics[0]을 주요 장르·메커니즘으로 사용한다. 이미 선택된 게임들과 주요 장르가 덜 겹치는 후보를 우선하고, 같으면 주요 메커니즘을 비교한다. 데이터 편집자는 주요 항목을 배열 첫 값으로 관리해야 한다. 누락된 태그를 새 장르로 간주하지 않는다. 다양성 때문에 앞선 시간·유통·선호 조건의 우선순위를 뒤집지 않는다.
 
 ## 결과·추천 이유
-각 recommendation은 카드용 game DTO, reasons, nullable relaxation으로 구성된다. DTO에는 한국어 이름, 가능·추천 인원, 시간 범위·실제 평균(null 가능), 난이도·장르·메커니즘·언어 상태, 확인일과 detailPath가 있다. 권리 확인 이미지가 없으므로 이미지를 생성하거나 외부 URL을 넣지 않는다. detailPath는 향후 상세 페이지용 경로이며 Phase 3 카드에는 비활성 상세 준비 버튼만 표시한다.
+각 recommendation은 카드용 game DTO, reasons, nullable relaxation으로 구성된다. DTO에는 한국어 이름, 가능·추천 인원, 시간 범위·실제 평균(null 가능), 난이도·장르·메커니즘·언어 상태, 확인일과 detailPath가 있다. 권리 확인 이미지가 없으므로 이미지를 생성하거나 외부 URL을 넣지 않는다. Phase 4에서 detailPath를 실제 상세 링크로 연결했다. 상세도 카탈로그의 공개 검토 경계를 적용한다.
 
 reasons는 PLAYERS / BEST_PLAYERS / TIME / MOOD / DIFFICULTY / LANGUAGE / DOMESTIC_AVAILABILITY 코드와 MATCH / INFO / CAUTION, 한국어 메시지를 갖는다. 가능 인원과 추천 인원을 구별하고, 자체 태그는 자체 검토라는 표현을 사용한다. 품절·재고 미확인·언어 부담도 함께 설명한다. 국내 재고 확인은 확인 시점의 사실이며 현재 재고 보장을 하지 않는다. 국내 인기·최고·정확도 주장은 생성하지 않는다.
 
@@ -78,3 +78,6 @@ reasons는 PLAYERS / BEST_PLAYERS / TIME / MOOD / DIFFICULTY / LANGUAGE / DOMEST
 
 ## 검증과 공개 경계
 2·4·7·8·10인, 결과 없음·최대 5개, 모든 시간 경계·무한 상한·완화 제한, 분위기·난이도·ANY·한국어 의존도, 중복·누락·미검토 편집, 다양성·동률, JSON 직렬화·입력 불변성을 테스트했다. 테스트 가상 게임은 `__tests__/fixtures.ts` 내부에만 있으며 운영 데이터나 seed에 추가하지 않는다. 현재 실데이터는 Phase 1의 개발용 샘플 1개뿐이고 공개 승인·이용 범위 검토는 여전히 남아 있다. 엔진의 추천 가능 판정은 공개 승인이나 재이용 허가를 대신하지 않는다.
+
+## Phase 4 룰렛 연결
+추천 순위·점수 규칙은 변경하지 않았다. 결과 화면의 최대 5개 추천에서 이름·slug만 룰렛으로 넘기고 사용자가 선택한 부분집합을 같은 확률로 고른다. 룰렛의 무작위 선택은 추천 적합도나 순위에 영향을 주지 않는다. 실제 데이터는 여전히 샘플 1개이며 다중 후보 검증에 사용한 가상 게임은 테스트 파일에만 존재한다.
