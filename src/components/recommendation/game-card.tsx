@@ -1,3 +1,4 @@
+import { GamePhoto } from "@/components/games/game-photo";
 import { Check, ChevronDown, Info, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function GameCard({ recommendation, rank }: { recommendation: Recommendat
   return <article aria-labelledby={`game-${game.slug}`} className="overflow-hidden rounded-3xl border border-border bg-white/80">
     <div className="p-5 sm:p-8">
       <div className="flex items-start gap-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-lg font-bold text-white">{String(rank).padStart(2, "0")}</span><div className="min-w-0 flex-1"><p className="mb-1 text-xs font-semibold text-primary">우리 모임의 선택지</p><h2 id={`game-${game.slug}`} className="break-words text-2xl font-bold tracking-tight">{game.nameKo}</h2>{game.nameEn && <p className="mt-1 text-xs text-muted-foreground">{game.nameEn}</p>}</div><span className="hidden rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground sm:block">{game.domesticAvailability === "IN_STOCK" ? "국내 판매 확인" : game.domesticAvailability === "UNKNOWN" ? "국내 플레이 근거 확인" : "국내 상품 확인"}</span></div>
+      <GamePhoto slug={game.slug} />
       {game.descriptionKo && <p className="mt-5 text-sm leading-7 text-muted-foreground">{game.descriptionKo}</p>}
       <dl className="mt-6 grid grid-cols-2 gap-x-5 gap-y-5 rounded-2xl bg-background p-5 sm:grid-cols-3 lg:grid-cols-5">{facts.map(({ label, value }) => <div key={label} className="min-w-0"><dt className="mb-1 text-xs text-muted-foreground">{label}</dt><dd className="break-words text-sm font-semibold leading-6">{value}</dd></div>)}</dl>
       {relaxation && <div className="mt-5 rounded-xl border border-primary/25 bg-primary/5 p-4 text-sm leading-7"><p className="font-semibold text-primary">시간 조건을 완화한 게임이에요</p><p className="mt-1">{relaxation.message}</p></div>}

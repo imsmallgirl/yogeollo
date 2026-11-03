@@ -54,3 +54,6 @@ Phase 5 검증 환경에서는 Turbopack production 빌드의 내부 포트 생�
 
 ## Phase 5 데이터 확장 보완
 `data/catalog.ts`의 명시적 JSON 목록과 gameDatasetSchema 검증을 seed·개발 preview가 공유한다. Next의 정적 import로 파일을 포함하고 런타임 디렉터리 탐색이나 네트워크 수집은 하지 않는다. 운영 카탈로그는 이전처럼 DB와 공개 승인 해시를 사용한다.
+
+## 공개 라이선스 사진 보완
+사진은 별도 `data/game-photos.json` 정적 권리 manifest와 로컬 public/game-photos JPEG로 관리한다. photos.ts가 strict 검증하고 GamePhoto Server Component를 추천 카드·상세에서 재사용한다. next/image와 반응형 sizes·고정 높이·object-contain을 사용하며, 외부 이미지 서버 요청·신규 의존성·DB migration은 없다. 출처·촬영자·라이선스·변경·판본 안내를 모든 표시 위치에서 함께 제공한다.

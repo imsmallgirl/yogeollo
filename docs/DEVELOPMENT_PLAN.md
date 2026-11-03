@@ -45,3 +45,6 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 
 ## Phase 5 데이터 확장 보완
 Phase 6 승인 전 사용자가 요청한 데이터 추가만 Phase 5 보완 작업으로 진행했다. 공식 유통사 상품 안내를 개별 대조해 총 15개를 개발 카탈로그·seed에 연결했다. 현재 출처·변경 파일·검사·한계는 DATA_EXPANSION_1_REPORT.md를 따른다. Phase 6는 승인 대기다.
+
+## 공개 라이선스 사진 보완
+사용자의 허가 이미지 확보 요청에 따라 Phase 5 데이터 보완으로 사진 6개를 확인·다운로드하고 추천 카드·상세에 연결했다. 상세 기록은 IMAGE_SOURCES.md를 따른다. Phase 6·실제 배포는 진행하지 않았다.
