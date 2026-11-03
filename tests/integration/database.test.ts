@@ -52,17 +52,17 @@ describe("PostgreSQL 마이그레이션과 샘플", () => {
 
   it("서버 조회는 검증된 사실만 반환하고 미검토 편집은 숨긴다", async () => {
     const records = await listVerifiedBoardGames(database);
-    expect(records).toHaveLength(1);
-    expect(records[0].facts.nameKo).toBe("스플렌더");
-    expect(records[0].facts.domesticAvailability).toBe("LISTED");
-    expect(records[0].editorial).toBeNull();
+    expect(records).toHaveLength(loadSeedGames().length);
+    expect(records.some((record) => record.facts.slug === "dobble")).toBe(true);
+    expect(records.every((record) => record.facts.domesticAvailability === "LISTED")).toBe(true);
+    expect(records.every((record) => record.editorial === null)).toBe(true);
     expect(JSON.parse(JSON.stringify(records))).toEqual(records);
   });
 
   it.each(["PENDING", "STALE", "REJECTED"] as const)("%s 상태는 기본 서버 조회에서 제외한다", async (verificationStatus) => {
     await rolledBack(async (transaction) => {
       await transaction.boardGame.update({ where: { slug: "splendor" }, data: { verificationStatus } });
-      expect(await listVerifiedBoardGames(transaction)).toEqual([]);
+      expect((await listVerifiedBoardGames(transaction)).some((record) => record.facts.slug === "splendor")).toBe(false);
     });
   });
 

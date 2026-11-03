@@ -51,3 +51,6 @@ Playwright는 기존 개발 서버와 충돌하지 않도록 3173 포트의 `.ne
 CLI scripts/data-import.ts → Zod 입력 계약·순수 변경 계획 → prisma/import-service.ts의 Serializable 트랜잭션 → ImportBatch 및 기존 게임 관계로 연결한다. 웹 API나 Client Component에서 가져오기 서비스를 호출하지 않는다. src/domain/data-import/digest.ts는 Node crypto를 사용하는 서버/CLI 전용이다. 공개 카탈로그는 recordDigest까지 대조하며 미검토 편집은 해시에서 제외한다. 신규 의존성은 없다. 상세 운영 절차는 DATA_IMPORT.md를 따른다.
 
 Phase 5 검증 환경에서는 Turbopack production 빌드의 내부 포트 생성이 권한 허용 후에도 실패해 build 스크립트에 공식 `--webpack` 옵션을 명시했다. 개발 서버는 Turbopack을 유지하고 같은 App Router·Server Components를 사용한다.
+
+## Phase 5 데이터 확장 보완
+`data/catalog.ts`의 명시적 JSON 목록과 gameDatasetSchema 검증을 seed·개발 preview가 공유한다. Next의 정적 import로 파일을 포함하고 런타임 디렉터리 탐색이나 네트워크 수집은 하지 않는다. 운영 카탈로그는 이전처럼 DB와 공개 승인 해시를 사용한다.

@@ -1,6 +1,6 @@
 import "server-only";
 import { z } from "zod";
-import splendor from "../../data/games/splendor.json";
+import { loadGameDataset } from "../../data/catalog";
 import approvals from "../../data/publication-approvals.json";
 import { recommendationGameSchema, type RecommendationGame } from "../domain/recommendation/types";
 import { listVerifiedBoardGames } from "./games";
@@ -38,7 +38,7 @@ export async function loadRecommendationCatalog(options: {
   if (mode === "invalid") return { status: "unavailable" };
   if (mode === "blocked") return { status: "pending" };
   if (mode === "preview") {
-    return { status: "ready", preview: true, games: [recommendationGameSchema.parse(splendor)] };
+    return { status: "ready", preview: true, games: loadGameDataset().map((record) => recommendationGameSchema.parse(record)) };
   }
   const publication = approvalsSchema.safeParse(options.approvals ?? approvals);
   if (!publication.success) return { status: "unavailable" };

@@ -15,7 +15,8 @@ describe("추천 데이터 공개 경계", () => {
     expect(result.status).toBe("ready");
     if (result.status === "ready") {
       expect(result.preview).toBe(true);
-      expect(result.games).toHaveLength(1);
+      expect(result.games).toHaveLength(15);
+      expect(result.games.some((game) => game.facts.slug === "dobble")).toBe(true);
       expect(result.games[0].editorial?.verificationStatus).toBe("PENDING");
     }
     expect(listGames).not.toHaveBeenCalled();

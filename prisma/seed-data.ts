@@ -1,9 +1,8 @@
-import splendor from "../data/games/splendor.json";
-import { gameDatasetSchema } from "../src/domain/games/schema";
+import { loadGameDataset } from "../data/catalog";
 import type { PrismaClient } from "../src/generated/prisma/client";
 
 export function loadSeedGames() {
-  return gameDatasetSchema.parse([splendor]);
+  return loadGameDataset();
 }
 
 export async function seedGames(database: PrismaClient) {

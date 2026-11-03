@@ -10,6 +10,8 @@ test("운영 서버는 preview 환경변수로도 미검토 샘플을 노출하�
 });
 
 test("운영 상세 직접 접근은 공개 경계를 우회하지 않는다", async ({ page }) => {
+  const added = await page.goto("/games/dobble");
+  expect(added?.status()).toBe(404);
   const response = await page.goto("/games/splendor");
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("heading", { name: "페이지를 찾을 수 없어요" })).toBeVisible();

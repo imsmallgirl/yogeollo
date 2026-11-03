@@ -42,3 +42,6 @@ Prisma 7 설정과 PostgreSQL adapter, 모델·제약·인덱스·migration·see
 
 ### Phase 5 작업 기록
 권한 기반 파일 입력·오프라인 검사·대기/검토/반영 CLI, 중복·판본 충돌 차단, 변경 감지·이력 보존·원자적 반영과 공개 내용 해시를 추가했다. 실제 데이터 수량과 공개 승인은 유지한다. 검사·변경 파일·한계는 `docs/PHASE_5_REPORT.md`, 운영 절차는 `docs/DATA_IMPORT.md`를 따른다. Phase 6는 사용자 승인 대기다.
+
+## Phase 5 데이터 확장 보완
+Phase 6 승인 전 사용자가 요청한 데이터 추가만 Phase 5 보완 작업으로 진행했다. 공식 유통사 상품 안내를 개별 대조해 총 15개를 개발 카탈로그·seed에 연결했다. 현재 출처·변경 파일·검사·한계는 DATA_EXPANSION_1_REPORT.md를 따른다. Phase 6는 승인 대기다.

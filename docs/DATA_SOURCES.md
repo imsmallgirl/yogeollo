@@ -1,7 +1,7 @@
 # 데이터 출처와 수집 정책
 
 ## 현재 상태
-Phase 1에는 스플렌더 기본판 **1개**의 소량 사실 확인 샘플과 seed를 추가했다. 100개는 목표이며 숫자를 맞추기 위해 이름·인원·규칙·판매 사실을 생성하지 않는다. 공개 승인 완료 게임은 아직 0개다.
+Phase 1의 스플렌더 1개에, 사용자의 데이터 추가 요청으로 공식 유통사 사실 대조 자료 14개를 더해 **총 15개**다. 개발 미리보기와 create-only seed에 연결했다. 100개까지 85개가 남아 있고 숫자를 맞추기 위해 정보를 생성하지 않는다. 공개 승인 완료 게임은 0개다. 신규 출처·판본·수치·한계는 [데이터 확장 보고서](DATA_EXPANSION_1_REPORT.md)를 따른다. 이하 Phase별 기록은 당시 상태다.
 
 ## 후보 출처
 - 코리아보드게임즈: https://www.koreaboardgames.com/
@@ -57,3 +57,23 @@ Phase 1에는 스플렌더 기본판 **1개**의 소량 사실 확인 샘플과 
 
 ## Phase 5 구현
 새 외부 요청·크롤링·BGG API 호출은 하지 않았다. 수집 권한이 없는 상태를 유지한 기존 샘플의 구조 예제를 data/imports에 추가했고 실제 자료로 승인·반영하지 않았다. 허가된 파일·수동 대조 기록은 acquisition.permissionBasis와 관측의 usageStatus/usageNoteKo로 근거를 남기며 문자열만으로 실제 권리를 자동 판정하지 않는다. BGG 타입·도메인·제공자는 차단한다. 공개 승인 목록은 0개이며 앞으로 recordDigest를 포함해야 한다. 절차와 한계는 DATA_IMPORT.md를 따른다.
+
+## Phase 5 데이터 추가 보완
+| 게임 | 인원 | 표기 시간 | 확인한 상품 |
+| --- | --- | --- | --- |
+| 젝스님트 | 2~10명 | 20분 | [상품번호 309](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=309) |
+| 카르카손 | 2~5명 | 35분 | [상품번호 1000000871](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1000000871) |
+| 커피 러시 | 2~4명 | 30분 | [상품번호 1000001019](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1000001019) |
+| 다빈치 코드 | 2~4명 | 15분 | [상품번호 8](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=8) |
+| 딕싯 | 3~8명 | 30분 | [상품번호 1000000059](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1000000059) |
+| 도블 | 2~8명 | 15분 | [상품번호 1589](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1589) |
+| 달무티 | 4~8명 | 15분 | [상품번호 916](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=916) |
+| 할리갈리 링엘딩 | 2~8명 | 10분 | [상품번호 130](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=130) |
+| 할리갈리 | 2~6명 | 15분 | [상품번호 118](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=118) |
+| 클라스크 | 2명 | 10분 | [상품번호 1000000088](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1000000088) |
+| 로보77 | 2~8명 | 30분 | [상품번호 21](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=21) |
+| 루미큐브 클래식 | 2~4명 | 20분 | [상품번호 25](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=25) |
+| 사보타지 | 3~10명 | 30분 | [상품번호 995](https://akongdakong.co.kr/goods/goods_view.php?goodsNo=995) |
+| 우봉고 | 1~4명 | 25분 | [상품번호 1000000935](https://www.akongdakong.co.kr/goods/goods_view.php?goodsNo=1000000935) |
+
+확인 시각과 필드별 근거는 개별 JSON 관측에 기록했다. 공식 쇼핑몰의 인기도 배지를 국내 인기 지표로 변환하지 않았다. 신규 editorial=null이며 권장 인원·분위기·난이도·한국어판 등은 추정하지 않는다. 개별 사실 기록(FACTS_ONLY)과 공개/상업적 이용 허가는 구분한다.

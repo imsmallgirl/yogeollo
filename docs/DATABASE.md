@@ -45,3 +45,6 @@ seed는 전체 입력을 먼저 검증한 뒤 트랜잭션 안에서 slug 기준
 
 ## Phase 5 구현
 ImportBatch는 UUID, 유일 SHA-256 digest, JSON payload/baseState/plan, PENDING→APPROVED/REJECTED→(승인만)APPLIED 상태, 검토자·사유·시각, 반영 시각·결과를 저장한다. status+createdAt 인덱스와 상태·JSON·해시 CHECK를 추가했다. SQL trigger로 원문·기준·계획 변경/삭제와 잘못된 전이를 차단한다. SourceObservation은 append-only이며 재검증은 새 관측으로 기록한다. 승인과 반영 시 기준 스냅샷을 대조하고 전체 쓰기는 Serializable 트랜잭션으로 처리한다. 기존 자체 편집·관측·생략된 ID는 보존한다. migration: 20261102190000_import_batches. 테스트는 기존 DB와 별도 IMPORT_TEST_DATABASE_URL을 사용한다.
+
+## Phase 5 데이터 확장 보완
+실제 개발 자료는 15개다. 신규 14개의 외부 식별자는 akongdakong 상품번호이며 DB 스키마·migration은 바꾸지 않았다. seed는 공통 data/catalog.ts에서 전체 목록을 검증한 후 기존 create-only 방식으로 신규 slug만 입력한다. 테스트 DB에서 기존 자료·관측·자체 편집 보존과 15개 조회를 검증했다.
